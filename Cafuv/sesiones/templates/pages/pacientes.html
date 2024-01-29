@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<h1><i class="fa-solid fa-user-group"></i> Pacientes</h1>
+{% block title2 %}
+{% endblock %}
+{% endblock title %}
+
+{% block active-paciente %}active{% endblock active-paciente %}
+
+{% block form %}
+{% block form-paciente %}
+{% endblock %}
+{% endblock form %}
+
+
+{% block content %}
+<i class="fa-solid fa-circle-info" style="font-size:25px; position: absolute; top:20px; right:20px; color:var(--primary)" onclick="tutorial_paciente()"></i>
+
+<div class="btn-container">
+    <a href="{% url 'pacientes_form' pk=0 %}" class="btn" id="btn-agregar-paciente">Agregar nuevo paciente +</a>
+</div>
+<div class="wrapper"></div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let currentURL = window.location.href;
+        let parts = currentURL.split('/');
+        let baseURL = parts.slice(0, 4).join('/') + '/'; // Obtiene la URL base
+        fetch(baseURL+'api')
+            .then(response => response.json())
+            .then(data => {
+                new gridjs.Grid({
+                    search: true,
+                    sort: true,
+                    resizable: true,
+                    columns: [
+                        "Rut",
+                        "Nombre Completo",
+                        "Edad",
+                        "Teléfono",
+                        "Email",
+                        {
+                            name: 'Perfil',
+                            formatter: (cell) => gridjs.html(`<a href='form/${cell}' class='btn btn-table'>Ver perfil</a>`)
+                        }
+                    ],
+                    data: data,
+                    language: {
+                        'search': {
+                            'placeholder': 'Buscar...'
+                        },
+                    }
+                }).render(document.getElementById("wrapper"));
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+
+</script>
+{% endblock content %}

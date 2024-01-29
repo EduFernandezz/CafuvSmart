@@ -1,0 +1,66 @@
+{% extends 'pages/pacientes.html' %}
+{% load static %}
+{% block form-paciente %}
+<i class="fa-solid fa-circle-info" style="font-size:25px; position: absolute; top:20px; right:20px; color:var(--primary)" onclick="tutorial_info_paciente()"></i>
+
+<div class="form-back">
+    <div class="form-container">
+        <div class="form-header">
+            <h2>Nuevo Paciente</h2>
+            <a href="{% url 'pacientes_view' %}"><i class="fa-solid fa-x"></i></a>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="rut-container">
+                <div class="form-box">
+                    {{ form.rut }}
+                    <label class="label-input" for="id_rut">{{ form.rut.label }}</label>
+                </div>
+                <i class="fa fa-minus"></i>
+                <input class="disabled" type="text" id="dv" name="inputDv" disabled>
+            </div>
+            <div class="form-box">
+                {{ form.nombre }}
+                <label class="label-input" for="id_label">{{ form.nombre.label }}</label>
+            </div>
+            <div class="form-box">
+                {{ form.apellido }}
+                <label class="label-input" for="id_apellido">{{ form.apellido.label }}</label>
+            </div>
+            <div class="form-box">
+                {{ form.fecha_nacimiento }}
+                <label class="label-input" for="id_fecha_nacimiento">{{ form.fecha_nacimiento.label }}</label>
+            </div>
+            <div class="form-box">
+                {{ form.comuna }}
+                <label class="label-input" for="id_comuna">{{ form.comuna.label }}</label>
+            </div>
+            <div class="form-box">
+                {{ form.genero }}
+                <label class="label-input" for="id_genero">{{ form.genero.label }}</label>
+            </div>
+            <div class="telefono-container">
+                <input class="disabled" type="text" value="+56" disabled>
+                <div class="form-box">
+                    {{ form.telefono }}
+                    <label class="label-input" for="id_telefono">{{ form.telefono.label }}</label>
+                </div>
+            </div>
+            <div class="form-box">
+                {{ form.email }}
+                <label class="label-input" for="id_email">{{ form.email.label }}</label>
+            </div>
+            <button class="btn" type="submit">Guardar</button>
+        </form>
+    </div>
+</div>
+<script>
+    const fechaNacimientoInput = document.getElementById("id_fecha_nacimiento")
+    fechaNacimientoInput.addEventListener('focus', function (event) {
+        fechaNacimientoInput.type = "date"
+    });
+    fechaNacimientoInput.addEventListener('blur', function (event) {
+    fechaNacimientoInput.type = "text";
+});
+</script>
+{% endblock form-paciente %}

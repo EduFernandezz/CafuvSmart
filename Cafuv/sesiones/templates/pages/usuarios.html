@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<h1><i class="fa-solid fa-user-doctor"></i> Usuarios</h1>
+{% endblock title %}
+
+
+
+{% block active-usuario %}active{% endblock active-usuario %}
+
+
+
+{% block form %}
+{% block form-usuario %}
+{% endblock %}
+{% endblock form %}
+
+{% block content %}
+<i class="fa-solid fa-circle-info" style="font-size:25px; position: absolute; top:20px; right:20px; color:var(--primary)" onclick="tutorial_usuario()"></i>
+
+<div class="btn-container">
+    <a href="{% url 'usuarios_form' pk='0' %}" class="btn" id="btn-agregar-usuario">Agregar nuevo usuario +</a>
+</div>
+<div class="wrapper"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('api/')
+            .then(response => response.json())
+            .then(data => {
+                new gridjs.Grid({
+                    search: true,
+                    sort: true,
+                    resizable: true,
+                    columns: [
+                        "Nombre",
+                        {
+                            name: 'Correo Electrónico',
+                            formatter: (cell) => gridjs.html(`<a href="mailto:${cell}">${cell}</a>`)
+                        },
+                        "N° Contacto",
+                        "Tipo Usuario",
+                        {
+                            name: 'Acciones',
+                            formatter: (cell) => gridjs.html(cell)
+                        }
+
+                    ],
+                    data: data,
+                    language: {
+                        'search': {
+                            'placeholder': 'Buscar...'
+                        },
+                    }
+                }).render(document.getElementById("wrapper"));
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+</script>
+{% endblock content %}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Activación de cuenta CAFUV</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+        <style>
+            body {
+                font-family: 'Roboto', sans-serif;
+                font-size: 16px;
+                line-height: 1.6;
+                margin: 0;
+                padding: 0;
+                -webkit-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+                background-color: gainsboro;
+                >div {
+                    text-align: start;
+                    width: 100%;
+                    padding: 20px;
+                }
+
+                .header {
+                    display: flex;
+                    color: white;
+                    justify-content: space-around;
+                    background-color: #003c58;
+                    padding: 10px 0 10px 0;
+                    align-items: center;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="header">
+            <h1 style="font-weight:400; font-size:40px; padding:0; margin:0;">CAFUV</h1>
+            <img src="https://cafuv.cl/logo.png" alt="Logo-CAFUV" width="100px" height="100px">
+        </div>
+        <div>
+            <h3 style="font-weight: 400;">Hola {{user.first_name}} {{user.last_name}},</h3>
+            <h3 style="font-weight: 400;">Gracias por formar parte de CAFUV</h3>
+        </div>
+
+        <div style="background-color: #003c58; color:#ffffff; padding:50px 0px 50px 0px;">
+            <div style="background-color: #ffffff; width: 80%; margin-left:10%; color:black; padding:20px 20px 20px 20px; border-radius: 15px;">
+                <h2 style="text-align: center; font-weight: 400;">¡Aquí podrás acceder a nuestra plataforma!</h2>
+                <h3 style="font-weight: 100; margin-top:50px">Para activar tu cuenta y configurar una contraseña, por favor haz click en el siguiente botón:</h3>
+                <div style="width: 100%; display: flex; justify-content: center;">
+                    <a href="http://{{domain}}/activate/{{uid}}/{{token}}/{{grupo}}" style="margin-top:50px; margin-bottom:50px;display: inline-block; background-color: #003c58; border: 1px solid #003c58; border-radius: 3px; color: #ffffff; font-family: Helvetica, Arial, sans-serif; font-size: 16px; line-height: 44px; text-align: center; text-decoration: none; width: 200px; -webkit-text-size-adjust: none;">Activar cuenta</a>
+                </div>
+                <p>Si tienes problemas con el botón, copia y pega el siguiente enlace en tu navegador:</p>
+                <a href="http://{{domain}}/activate/{{uid}}/{{token}}/{{grupo}}">http://{{domain}}/activate/{{uid}}/{{token}}/{{grupo}}</a>
+                <p style="margin-top:50px">
+                    ¡Gracias!
+                    <br>
+                    Atentamente, el equipo de CAFUV
+                </p>
+            </div>
+        </div>
+
+        <div>
+            <p>
+                Si no eres parte de CAFUV, por favor ignora este correo.
+            </p>
+        </div>
+    </body>
+
+</html>

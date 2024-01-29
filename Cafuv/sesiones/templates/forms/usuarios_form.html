@@ -1,0 +1,58 @@
+{% extends 'pages/usuarios.html' %}
+{% load static %}
+{% block form-usuario %}
+<div class="form-back">
+    <div class="form-container">
+        <div class="form-header">
+            <h2>{{titulo}} Usuario</h2>
+            <a href="{% url 'usuarios_view' %}"><i class="fa-solid fa-x"></i></a>
+        </div>
+        <form method="post" id="form_usuario">
+            {% csrf_token %}
+            <div class="rut-container">
+                <div class="form-box">
+                    {{ form.username }}
+                    <label class="label-input" for="id_username">{{ form.username.label }}</label>
+                </div>
+                <i class="fa fa-minus"></i>
+                <input class="disabled" type="text" id="dv" name="inputDv" value="{{dv}}" disabled>
+            </div>
+            <div class="form-box">
+                {{ form.first_name }}
+                <label class="label-input" for="id_first_name">{{ form.first_name.label }}</label>
+            </div>
+            <div class="form-box">
+                {{ form.last_name }}
+                <label class="label-input" for="id_last_name">{{ form.last_name.label }}</label>
+            </div>
+            <div class="form-box">
+                {{ form.grupo }}
+                <label class="label-input" for="id_grupo">{{ form.grupo.label }}</label>
+            </div>
+            <div class="telefono-container">
+                <input class="disabled" disabled type="text" value="+56">
+                <div class="form-box">
+                    {{ form.phone }}
+                    <label class="label-input" for="id_telefono">{{ form.phone.label }}</label>
+                </div>
+            </div>
+            <div class="form-box">
+                {{ form.email }}
+                <label class="label-input" for="id_email">{{ form.email.label }}</label>
+            </div>
+            <input id="id_password1" name="password1" hidden>
+            <input id="id_password2" name="password2" hidden>
+            <button class="btn" type="text" onclick="guardar_usuario()">Guardar</button>
+        </form>
+    </div>
+</div>
+<script>
+    const fechaNacimientoInput = document.getElementById("id_fecha_nacimiento")
+    fechaNacimientoInput.addEventListener('focus', function (event) {
+        fechaNacimientoInput.type = "date"
+    });
+    fechaNacimientoInput.addEventListener('blur', function (event) {
+        fechaNacimientoInput.type = "text";
+    });
+</script>
+{% endblock form-usuario %}

@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+<h1><i class="fa-solid fa-home"></i> Inicio</h1>
+{% endblock title %}
+
+{% block active-index %}active{% endblock active-index %}
+
+{% block form %}
+{% block form-evento %}
+{% endblock %}
+{% endblock form %}
+
+{% block content %}
+<script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
+<i class="fa-solid fa-circle-info" style="font-size:25px; position: absolute; top:20px; right:20px; color:var(--primary)" onclick="tutorial_evento()"></i>
+<div class="btn-container">
+    <a href="{% url 'eventos_form' pk=0 %}" class="btn" id="btn-agregar-evento">
+        Agregar nuevo Evento +</a>
+</div>
+<div id="calendar"></div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/eventos/api')
+            .then(response => response.json())
+            .then(data => {
+                var calendarEl = document.getElementById('calendar');
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    locale: 'es',
+                    eventContent: function (arg) {
+                        return {
+                            html: '<div class="calendar-link" style="background-color:' + arg.event.backgroundColor + '"><a href="eventos/' + arg.event.id + '"><b>' + arg.event.title + '</b><i class="fa-regular fa-eye"></i></a></div>'
+                        };
+                    },
+                    events: data,
+                    titleFormat: {
+                        year: 'numeric',
+                        month: 'long', // Utiliza el nombre completo del mes
+                    },
+                    headerToolbar: {
+                        start: 'title', // will normally be on the left. if RTL, will be on the right
+                        center: '',
+                        end: 'prev,next dayGridMonth,timeGridWeek,timeGridDay' // will normally be on the right. if RTL, will be on the left
+                    },
+                    buttonText: {
+                        today: 'Hoy',
+                        month: 'Mes',
+                        week: 'Semana',
+                        day: 'Día',
+                        list: 'Lista'
+                    },
+                });
+                calendar.render();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+    });
+</script>
+<div style="padding:20px; display:flex; flex-direction:column; align-items:center; width:70%; margin-left:15%;">
+    <h1>Lista de espera</h1>
+</div>
+
+<div id="lista_espera"></div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/listaespera/api/')
+            .then(response => response.json())
+            .then(data => {
+                new gridjs.Grid({
+                    search: true,
+                    sort: true,
+                    resizable: true,
+                    columns: [
+                        'Nombre',
+                        'Fecha',
+                        'Motivo',
+                        {
+                            name: 'Ver Más',
+                            formatter: (cell) => gridjs.html(`<a href="/atencion/${cell}"><i class="fa-solid fa-eye"></i>`)
+                        }
+                    ],
+                    data: data,
+                    language: {
+                        'search': {
+                            'placeholder': 'Buscar...'
+                        },
+                    }
+                }).render(document.getElementById("lista_espera"));
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+</script>
+<div style="padding:20px; display:flex; flex-direction:column; align-items:center; width:70%; margin-left:15%;">
+    <h1>Atenciones</h1>
+    <canvas id="myChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const miGrafico = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            datasets: [{
+                label: 'Solicitudes',
+                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, parseInt('{{solicitudes}}')], // Estos son datos de ejemplo
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Atenciones',
+                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, parseInt('{{atenciones}}')], // Estos son datos de ejemplo
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: '2023',
+                }
+            }
+        }
+    });
+</script>
+<script src="{% static 'js/base.js' %}"></script>
+
+{% endblock content %}

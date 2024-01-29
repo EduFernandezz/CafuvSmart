@@ -1,0 +1,49 @@
+{% extends 'forms/atencion.html' %}
+{% load static %}
+
+
+{% block form-paciente %}
+<div class="form-back">
+    <div class="form-container">
+        <div class="form-header">
+            {% if sesion %}
+            <h2>Editar Sesión</h2>
+            {% else %}
+            <h2>Nueva Sesión</h2>
+            {% endif %}
+            <a href="{% url 'atencion_form' pk=solicitud.id %}"><i class="fa-solid fa-x"></i></a>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-box" style="margin-top:30px;">
+                <input name="fecha" id="id_fecha" type="datetime-local" value="{{sesion.fecha_input}}" onchange="validar_fecha(this)">
+                <label class="label-input" for="id_apellido">Fecha de atención</label>
+            </div>
+            <span id="fecha_alert" class="alert"></span>
+            <div class="form-box">
+                <input name="tiempo" id="id_tiempo" type="number" value="{{sesion.tiempo}}" onchange="validar_positivo(this)">
+                <label class="label-input" for="id_tiempo">Duración (Minutos)</label>
+            </div>
+            <p id="positive_alert"></p>
+            <div class="form-box">
+                <input name="area" id="id_area" type="text" value="{{sesion.area}}">
+                <label class="label-input" for="id_area">Área</label>
+            </div>
+            <div class="form-box">
+                <input name="objetivo" id="id_objetivo" type="text" value="{{sesion.objetivo}}">
+                <label class="label-input" for="id_objetivo">Objetivo</label>
+            </div>
+            <div class="form-box">
+                <input name="material" id="id_material" type="text" value="{{sesion.material}}">
+                <label class="label-input" for="id_material">Material</label>
+            </div>
+            <div class="form-box">
+                <textarea name="respuesta" id="id_respuesta" type="text">{{sesion.respuesta}}</textarea>
+                <label class="label-input" for="id_respuesta">Respuesta</label>
+            </div>
+
+            <button class="btn" type="submit">Guardar</button>
+        </form>
+    </div>
+</div>
+{% endblock form-paciente %}

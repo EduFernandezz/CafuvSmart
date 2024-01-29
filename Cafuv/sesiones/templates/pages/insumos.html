@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<h1><i class="fa-solid fa-suitcase-medical"></i> Insumos</h1>
+{% endblock title %}
+
+{% block active-insumo %}active{% endblock active-insumo %}
+
+{% block form %}
+{% block form-insumo %}
+{% endblock %}
+{% endblock form %}
+
+{% block content %}
+<i class="fa-solid fa-circle-info" style="font-size:25px; position: absolute; top:20px; right:20px; color:var(--primary)" onclick="tutorial_insumo()"></i>
+
+<div class="btn-container">
+    <a href="{% url 'insumos_form' pk=0 %}" class="btn" id="btn-agregar-insumo">Agregar nuevo insumo +</a>
+</div>
+<div id="wrapper"></div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/insumos/api/')
+            .then(response => response.json())
+            .then(data => {
+                new gridjs.Grid({
+                    search: true,
+                    sort: true,
+                    resizable: true,
+                    columns: [
+                        "Nombre",
+                        "Descripción",
+                        "Estado",
+                        "Cantidad",
+                        {
+                            name: 'Acciones',
+                            formatter: (cell) => gridjs.html(`<div class="container-table-button"><a class='btn bg-secondary' href='${cell}'><i class="fa-solid fa-pen-to-square"></i></a><a class='btn bg-danger' href='/entrada-salida/insumos/${cell}'><i class="fa-solid fa-right-left"></i></a></div>`)
+                        }
+                    ],
+                    data: data,
+                    language: {
+                        'search': {
+                            'placeholder': 'Buscar...'
+                        },
+                    }
+                }).render(document.getElementById("wrapper"));
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+</script>
+{% endblock content %}

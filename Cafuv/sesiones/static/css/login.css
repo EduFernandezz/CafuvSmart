@@ -1,0 +1,45 @@
+*{
+  margin:0;
+  padding:0;
+}
+
+body{
+  display: grid;
+  grid-template-columns: 50% 50%;
+  font-family: 'Nunito', sans-serif;
+
+}
+
+.logo{
+  position:absolute;
+  top:25px;
+  left:25px;
+}
+
+.formulario{
+  padding:25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+i {
+  color: #003c58;
+  font-size: 24px;
+  transition: 0.2s;
+}
+
+form{
+  width:80%;
+  margin-top:100px;
+}
+
+.input-rut {
+  margin-bottom:25px;
+}
+
+button {
+  background-color: #003c58 !important;
+  color: #fff !important;
+}

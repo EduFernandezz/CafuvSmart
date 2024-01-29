@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<h1><i class="fa-solid fa-user-group"></i> Perfil paciente {{paciente.nombre}} {{paciente.apellido}}</h1>
+{% endblock title %}
+{% block active-paciente %}active{% endblock active-paciente %}
+{% block content %}
+<i class="fa-solid fa-circle-info" style="font-size:25px; position: absolute; top:20px; right:20px; color:var(--primary)" onclick="tutorial_perfil_paciente()"></i>
+
+<div class="profile-container">
+    <div class="profile-item" id="perfil-paciente">
+        <div>
+            <h2>Información del paciente</h2>
+            <form method="post">
+                {% csrf_token %}
+                <label>{{form.rut.label}}</label>
+                <div class="rut-edit-container">
+                    {{form.rut}}
+                    <i class="fa fa-minus"></i>
+                    <input class="disabled" type="text" id="dv" name="inputDv" value="{{dv}}" disabled>
+                    <i class="fa-solid fa-pen-to-square btn-edit" onclick="alternar_estado('id_rut')"></i>
+                </div>
+
+                <label>{{form.nombre.label}}</label>
+                <div class="form-edit-box">
+                    {{form.nombre}}
+                    <i class="fa-solid fa-pen-to-square btn-edit" onclick="alternar_estado('id_nombre')"></i>
+                </div>
+
+                <label>{{form.apellido.label}}</label>
+                <div class="form-edit-box">
+                    {{form.apellido}}
+                    <i class="fa-solid fa-pen-to-square btn-edit" onclick="alternar_estado('id_apellido')"></i>
+                </div>
+
+                <label>{{form.fecha_nacimiento.label}}</label>
+                <div class="form-edit-box">
+                    {{form.fecha_nacimiento}}
+                    <i class="fa-solid fa-pen-to-square btn-edit" onclick="alternar_estado('id_fecha_nacimiento')"></i>
+                </div>
+
+                <label>{{form.comuna.label}}</label>
+                <div class="form-edit-box">
+                    {{form.comuna}}
+                    <i class="fa-solid fa-pen-to-square btn-edit" onclick="alternar_estado('id_comuna')"></i>
+                </div>
+
+                <label>{{form.genero.label}}</label>
+                <div class="form-edit-box">
+                    {{form.genero}}
+                    <i class="fa-solid fa-pen-to-square btn-edit" onclick="alternar_estado('id_genero')"></i>
+                </div>
+
+                <label>{{form.telefono.label}}</label>
+                <div class="form-edit-box">
+                    {{form.telefono}}
+                    <i class="fa-solid fa-pen-to-square btn-edit" onclick="alternar_estado('id_telefono')"></i>
+                </div>
+
+                <label>{{form.email.label}}</label>
+                <div class="form-edit-box">
+                    {{form.email}}
+                    <i class="fa-solid fa-pen-to-square btn-edit" onclick="alternar_estado('id_email')"></i>
+                </div>
+                <button hidden type="submit" id="btn-submit"></button>
+                <button class="btn" type="text" onclick="enviar_formulario()">Guardar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="profile-item" id="perfil-historial">
+
+        <div>
+            <div class="btnTitle">
+                <h2>Historial de atenciones</h2>
+                <a href="{% url 'solicitudes_form' pk='0' pk_paciente=paciente.id %}" class="btn">Agregar nueva solicitud +</a>
+            </div>
+            <div id="solicitudes"></div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    const inputs = document.querySelectorAll('input')
+    inputs.forEach(function (input) {
+        if (input.name != 'csrfmiddlewaretoken') {
+            input.disabled = true;
+        }
+    });
+
+    function enviar_formulario() {
+        inputs.forEach(function (input) {
+            input.disabled = false
+        });
+        document.getElementById("id_genero").disabled = false
+        document.getElementById("btn-submit").click()
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/pacientes/api/{{paciente.id}}/')
+            .then(response => response.json())
+            .then(data => {
+                new gridjs.Grid({
+                    search: true,
+                    sort: true,
+                    resizable: true,
+                    columns: [
+                        'Fecha Solicitud',
+                        {
+                            name: 'Detalle Solicitud',
+                            formatter: (cell) => gridjs.html(`<a href='/solicitud/${cell}/{{paciente.id}}/' class='btn btn-table popup'>Ver Detalle</a>`)
+                        },
+                        "Fecha Atención",
+                        {
+                            name: 'Detalle Atención',
+                            formatter: (cell) => gridjs.html(`<a href='/atencion/${cell[1]}' class='btn btn-table popup'>Ver Detalle</a>`)
+                        },
+                    ],
+                    data: data,
+                    language: {
+                        'search': {
+                            'placeholder': 'Buscar...'
+                        },
+                    }
+                }).render(document.getElementById("solicitudes"));
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+
+
+
+
+</script>
+{% endblock content %}
+
+{% block form %}
+{% block form-paciente %}
+{% endblock %}
+{% endblock form %}

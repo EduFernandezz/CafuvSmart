@@ -1,0 +1,34 @@
+{% extends 'pages/insumos.html' %}
+{% load static %}
+
+{% block form-insumo %}
+<div class="form-back">
+    <div class="form-container">
+        <div class="form-header">
+            <h2>Insumo</h2>
+            <a href="{% url 'insumos_view' %}"><i class="fa-solid fa-x"></i></a>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-box">
+                <input type="number" name="cantidad" id="id_cantidad" value="0" min="1">
+                <label class="label-input" for="id_cantidad" name="cantidad">Cantidad</label>
+            </div>
+            <select name="accion">
+                <option value="mas">Entrada <i class="fa-solid fa-arrow-up"></i></option>
+                <option value="menos">Salida <i class="fa-solid fa-arrow-up"></i></option>
+            </select>
+            <button type="submit" class="btn">Guardar</button>
+        </form>
+        <div class="list">
+            {% for x in objetos %}
+            <div>
+                <label>{% if x.tipo == '+' %}<i class="fa-solid fa-arrow-up"></i>{% else %}<i class="fa-solid fa-arrow-down"></i>{% endif %}</label>
+                <label>{{x.cantidad}}</label>
+                <label>{{x.usuario.first_name}} {{x.usuario.last_name}} <br> ({{x.fecha}})</label>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock form-insumo %}

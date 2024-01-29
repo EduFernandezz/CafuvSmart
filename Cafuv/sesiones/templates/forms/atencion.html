@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<h1>
+    <i class="fa-solid fa-user-group"></i> 
+    <a href="{% url 'pacientes_form' pk=solicitud.paciente.id %}" style="color:#1e1e1e">Perfil paciente {{solicitud.paciente.nombre}} {{solicitud.spaciente.apellido}}</a>
+    <i class="fa-solid fa-chevron-right"></i>
+    Solicitud
+</h1>
+{% endblock title %}
+{% block active-paciente %}active{% endblock active-paciente %}
+{% block content %}
+<div class="plan">
+    <div>
+        <h3>Paciente</h3>
+
+        <div>
+            <label>Nombre</label>
+            <div class="form-edit-box">
+                <input value="{{solicitud.paciente.nombre}} {{solicitud.paciente.apellido}}" disabled>
+            </div>
+        </div>
+        <div>
+            <label>Edad</label>
+            <div class="form-edit-box">
+                <input value="{{solicitud.paciente.edad}}" disabled>
+            </div>
+        </div>
+        <div class="fonos">
+            <h3>Fonoaudiólogos</h3>
+            <a href="{% url 'usuarios_solicitud_form' pk=solicitud.id %}" class="btn">Asignar fonoaudiólogo +</a>
+        </div>
+        {% for x in fonos %}
+        {{x.usuario.first_name}} {{x.usuario.last_name}} - {{x.cargo.nombre}} <a href="{% url 'desvincular_fono' pk=x.id %}"><i class="fa-solid fa-trash" style="color:red"></i></a><br>
+        {% endfor %}
+    </div>
+    {% if atencion %}
+    <form method="post" id="form_atencion">
+        {% csrf_token %}
+        <h3>Plan de Tratamiento</h3>
+        <label>Fecha de atención</label>
+        <div class="form-edit-box">
+            <input disabled name="fecha" id="id_fecha" type="datetime-local" onchange="validar_fecha(this)" value="{{atencion.fecha_input}}">
+            <i class="fa-solid fa-pen-to-square btn-edit" onclick="alternar_estado('id_fecha')"></i>
+        </div>
+
+        <span id="fecha_alert" class="alert"></span>
+        <label>Diagnóstico</label>
+        <div class="form-edit-box">
+            <input disabled name="diagnostico" id="id_diagnostico" type="text" value="{% if solicitud.atencion.diagnostico != None %}{{solicitud.atencion.diagnostico}}{% endif %}">
+            <i class="fa-solid fa-pen-to-square btn-edit" onclick="alternar_estado('id_diagnostico')"></i>
+        </div>
+
+        <label>Enfoque</label>
+        <div class="form-edit-box">
+            <input disabled name="enfoque" id="id_enfoque" type="text" value="{% if solicitud.atencion.diagnostico != None %}{{solicitud.atencion.enfoque}}{% endif %}">
+            <i class="fa-solid fa-pen-to-square btn-edit" onclick="alternar_estado('id_enfoque')"></i>
+        </div>
+
+        <label>Objetivo general</label>
+        <div class="form-edit-box">
+            <input disabled name="objetivo_general" id="id_objetivo_general" type="text" value="{% if solicitud.atencion.diagnostico != None %}{{solicitud.atencion.objetivo_general}}{% endif %}">
+            <i class="fa-solid fa-pen-to-square btn-edit" onclick="alternar_estado('id_objetivo_general')"></i>
+        </div>
+
+        <button class="btn" type="button" onclick="activar_inputs()" style="margin-top:50px;">Guardar</button>
+    </form>
+    <script>
+        function activar_inputs() {
+            document.getElementById('id_fecha').disabled = false;
+            document.getElementById('id_diagnostico').disabled = false;
+            document.getElementById('id_enfoque').disabled = false;
+            document.getElementById('id_objetivo_general').disabled = false;
+            document.getElementById('form_atencion').submit();
+        }
+    </script>
+    {% else %}
+    <form method="post">
+        {% csrf_token %}
+        <h3>Plan de Tratamiento</h3>
+
+        <div class="form-box" style="margin-top:30px;">
+            <input name="fecha" id="id_fecha" type="datetime-local" onchange="validar_fecha(this)">
+            <label class="label-input" for="id_apellido">Fecha de atención</label>
+        </div>
+        <span id="fecha_alert" class="alert"></span>
+        <p>Para continuar con el proceso debes asignar una fecha.</p>
+
+        <button class="btn" type="submit">Guardar</button>
+    </form>
+    {% endif %}
+</div>
+{% if atencion %}
+<div style="display:flex; justify-content:center; padding:50px; flex-direction:column; align-items:center;">
+    <h3>Plan Operacional</h3>
+    <a href="{% url 'sesion_form' pk=0 pk_solicitud=solicitud.id %}" class="btn" style="width:200px;text-align:center;">Agregar Sesión +</a>
+</div>
+{% endif %}
+
+<div style="padding:50px; padding-top:0px;">
+    {% if atencion %}
+    <div id="sesiones"></div>
+    {% else %}
+    <p>Debes asignar una fecha para planificar las sesiones del plan operacional</p>
+    {% endif %}
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/sesion/api/{{solicitud.id}}/')
+            .then(response => response.json())
+            .then(data => {
+                new gridjs.Grid({
+                    search: true,
+                    sort: true,
+                    resizable: true,
+                    columns: [
+                        'Fecha',
+                        'N° Sesión',
+                        'Tiempo',
+                        'Área',
+                        'Objetivo Operacional',
+                        'Materiales',
+                        'Respuesta',
+                        {
+                            name: 'Acciones',
+                            formatter: (cell) => gridjs.html(`<div class="container-table-button"><a class='btn bg-secondary' href='/sesion/form/${cell}/{{solicitud.id}}/'><i class="fa-solid fa-pen-to-square"></i></a><a class='btn bg-danger' href='/sesion/eliminar/${cell}'><i class='fa fa-trash'></i></a></div>`)
+                        }
+                    ],
+                    data: data,
+                    language: {
+                        'search': {
+                            'placeholder': 'Buscar...'
+                        },
+                    }
+                }).render(document.getElementById("sesiones"));
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+
+
+
+
+</script>
+{% endblock content %}
+
+{% block form %}
+{% block form-paciente %}
+{% endblock %}
+{% endblock form %}

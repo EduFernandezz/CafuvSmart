@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<h1><i class="fa-solid fa-user-group"></i> Perfil de usuario</h1>
+{% endblock title %}
+
+{% block active-paciente %}active{% endblock active-paciente %}
+
+{% block form %}
+{% block form-password %}
+{% endblock %}
+{% endblock form %}
+
+
+{% block content %}
+<i class="fa-solid fa-circle-info" style="font-size:25px; position: absolute; top:20px; right:20px; color:var(--primary)" onclick="tutorial_perfil_usuario()"></i>
+
+<style>
+    .profile-user {
+        display: flex;
+        justify-content: start;
+        padding:20px;
+        margin-top: 50px;
+    }
+</style>
+<div class="profile-user">
+    <div style="display:grid">
+        <img src="{{request.user.image.url}}" width="250px" height="250px" style="border-radius:50%">
+        <button type="button" class="btn" onclick="clickear('input_imagen1')" id="seleccion-imagen" style="margin-top: 15px;">Seleccionar imagen de perfil</button>
+    </div>
+    <div style="margin-left:100px; margin-top: 15px;" id="info-usuario">
+        <h2>{{request.user.first_name}} {{request.user.last_name}}</h2>
+        <h3>{{request.user.email}}</h3>
+        <a href="{% url 'change_password' %}" class="btn" id="btn-cambiar-contraseña" >Cambiar Contraseña</a>
+    </div>
+</div>
+
+<form id="form-imagen" method="post" enctype="multipart/form-data" action="{% url 'subir_imagen' %}">
+    {% csrf_token %}
+    <input style="display:none;" accept=".jpg, .jpeg, .png" name="imagen" id="input_imagen1" type="file" onchange="validar_imagen()">
+</form>
+<script>
+    function clickear(elemento) {
+        document.getElementById(elemento).click();
+    }
+    document.getElementById('input_imagen1').addEventListener('change', function() {
+        document.getElementById('form-imagen').submit();
+    });
+</script>
+{% endblock content %}

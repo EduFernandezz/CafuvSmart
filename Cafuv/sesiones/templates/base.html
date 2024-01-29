@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CafuvSmart</title>
+        {% load static %}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+        <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
+        <link href="{% static 'css/navigation.css' %}" rel="stylesheet">
+        <link href="{% static 'css/main.css' %}" rel="stylesheet">
+        {% block css %}{% endblock %}
+        <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script><!--CALENDARIO-->
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <link rel="icon" type="image/png" href="{% static 'img/logo4.png' %}">
+        <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+        <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/intro.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css" rel="stylesheet">
+    </head>
+
+    <body>
+        <aside id="aside">
+            <header>
+                <div class="logo">
+                    <a href="{% url 'home' %}">
+                        <img id="logo-expanded" src="{% static 'img/logo-expanded.png' %}" width="200px">
+                        <img id="logo-collapsed" src="{% static 'img/logo-collapsed.png' %}" width="50px">
+                    </a>
+                    <div class="close-button" id="mobile-button2">
+                        <i class="fa-solid fa-x"></i>
+                    </div>
+                    <button class="aside-control" id="aside-control">
+                        <i id="icon-control" class="fa-solid fa-chevron-left"></i>
+                    </button>
+                </div>
+
+            </header>
+            <nav>
+                <hr>
+                <ul>
+                    <a class="nav-link {% block active-index %}{% endblock %}" href="{% url 'home' %}">
+                        <div class="icon">
+                            <i class="fa-solid fa-house"></i>
+                        </div>
+                        <label class="text-link">Inicio</label>
+                    </a>
+                    {% if 'Administrador' == request.user.groups.all.0.name %}
+                    <a class="nav-link {% block active-usuario %}{% endblock %}" href="{% url 'usuarios_view' %}">
+                        <div class="icon">
+                            <i class="fa-solid fa-user-doctor"></i>
+                        </div>
+                        <label class="text-link">Usuarios</label>
+                    </a>
+                    {% endif %}
+
+                    <a class="nav-link {% block active-paciente %}{% endblock %}" href="{% url 'pacientes_view'%}">
+                        <div class="icon">
+                            <i class="fa-solid fa-user-group"></i>
+                        </div>
+                        <label class="text-link">Pacientes</label>
+                    </a>
+
+                    {% if 'Administrador' == request.user.groups.all.0.name or 'Fonoaudiólogo' == request.user.groups.all.0.name %}
+                    <a class="nav-link {% block active-insumo %}{% endblock %}" href="{% url 'insumos_view' %}">
+                        <div class="icon">
+                            <i class="fa-solid fa-suitcase-medical"></i>
+                        </div>
+                        <label class="text-link">Insumos</label>
+                    </a>
+                    {% endif %}
+
+                    {% if 'Administrador' == request.user.groups.all.0.name or 'Fonoaudiólogo' == request.user.groups.all.0.name %}
+                    <a class="nav-link {% block active-archivo %}{% endblock %}" href="{% url 'archivos_view' %}">
+                        <div class="icon">
+                            <i class="fa-solid fa-folder-open"></i>
+                        </div>
+                        <label class="text-link">Archivos</label>
+                    </a>
+                    {% endif %}
+
+                    <a class="nav-link" onclick="expand_usuarios()">
+                        <div class="icon">
+                            <i class="fa-solid fa-chevron-down" id="usuarios-icon"></i>
+                        </div>
+                        <label class="text-link">En línea</label>
+                    </a>
+                </ul>
+                <hr>
+                <div id="usuarios-list">
+                </div>
+            </nav>
+
+            <div class="mi-perfil" onclick="expand_profile(this)">
+                {% if request.user.loggin == True %}
+                <i class="fa-solid fa-circle" style="color:rgb(9, 219, 9); font-size:5px"></i>
+                {% else %}
+                <i class="fa-regular fa-circle" style="color:grey; font-size:5px"></i>
+                {% endif %}
+                <div style="border-radius:50%;width:30px;height:30px; background-color:white; padding:3px;display:grid;place-items:center;">
+                    <img src="{{request.user.image.url}}" width="20px;">
+                </div>
+                <label>{{request.user.first_name}}<br>{{request.user.last_name}}</label>
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+            <div class="menu-perfil" id="profile-menu" hidden>
+                <a class="nav-profile" id="estado1" href="{% url 'change' %}">
+                    {% if request.user.loggin == True %}
+                    <label class="text-link">En línea</label>
+                    <i class="fa-solid fa-circle" style="color:rgb(9, 219, 9); font-size:10px"></i>
+                    {% else %}
+                    <label class="text-link">Desconectado</label>
+                    <i class="fa-regular fa-circle" style="color:grey; font-size:x-small"></i>
+                    {% endif %}
+                </a>
+                <a class="nav-profile" id="ajustes1"  href="{% url 'perfil_usuario' %}">
+                    <label class="text-link">Ajustes</label>
+                    <i class="fa-solid fa-gear"></i>
+                </a>
+                <a class="nav-profile" href="{% url 'logout' %}" method="post" id="cerrar-sesion" >
+                    <label class="text-link">Cerrar Sesión</label>
+                    <i class="fa-solid fa-right-from-bracket" style="color:red"></i>
+                </a>
+                <form method="post" action="{% url 'logout' %}" class="nav-profile" id="cerrar-sesion">
+                    {% csrf_token %}
+                    <button type="submit">Cerrar sesión</button>
+                    <i class="fa-solid fa-right-from-bracket" style="color:red"></i>
+                </form>
+            </div>
+        </aside>
+        {% block form %}
+        {% endblock form %}
+        <main>
+
+            <div class="menu-button" id="mobile-button">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+            <div class="page-title">
+                {% block title %}
+                {% endblock title %}
+            </div>
+            {% block content %}
+            {% endblock %}
+            <div id="wrapper"></div>
+        </main>
+        {% if messages %}
+        {% for message in messages %}
+        <script>
+            swal("{{message}}", "", "{{message.tags}}");
+        </script>
+        {% endfor %}
+        {% endif %}
+        <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+
+
+        <script src="{% static 'js/base.js' %}"></script>
+
+        <script>
+
+        </script>
+    </body>
+
+</html>

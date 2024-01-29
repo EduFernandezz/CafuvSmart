@@ -1,0 +1,29 @@
+{% extends 'pages/perfil_paciente.html' %}
+{% load static %}
+
+
+{% block form-paciente %}
+<div class="form-back">
+    <div class="form-container">
+        <div class="form-header">
+            {% if solicitud %}
+            <h2>Editar Solicitud</h2>
+            {% else %}
+            <h2>Nueva Solicitud</h2>
+            {% endif %}
+            <a href="{% url 'pacientes_form' pk=paciente.id %}"><i class="fa-solid fa-x"></i></a>
+        </div>
+        {% if solicitud %}
+        <label>Fecha: {{solicitud.fecha}}</label>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-box" style="margin-top:40px;">
+                <textarea name="motivo" id="id_motivo" style="width:100%; height:100px" maxlength="255">{{solicitud.motivo}}</textarea>
+                <label class="label-input" for="id_motivo" >Motivo</label>
+            </div>
+            <button class="btn" type="submit">Guardar</button>
+        </form>
+    </div>
+</div>
+{% endblock form-paciente %}

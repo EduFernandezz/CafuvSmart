@@ -1,0 +1,66 @@
+{% load static %}
+<html lang="en">
+
+    <head>
+        <title>CafuvSmart</title>
+        <link rel="stylesheet" href="{% static 'css/main.css' %}">
+        <link rel="stylesheet" href="{% static 'css/login.css' %}">
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+    </head>
+
+    <body>
+        <div>
+            <img src="{% static 'img/cafuv.png' %}" class="logo" width="470px">
+
+            <img src="{% static 'img/cafuv1.jpeg' %}" width="100%" height="100%">
+        </div>
+        <div class="formulario">
+            <h1>¡Bienvenido a <br><span>
+                    CafuvSmart!.
+                </span></h1>
+            <p>.</p>
+            <div class="social-icon">
+                <a href="https://www.facebook.com/fono.udevalpo"><i class='bx bxl-facebook'></i></a>
+                <a href="https://twitter.com/uvalpochile"><i class='bx bxl-twitter'></i></a>
+                <a href="https://www.instagram.com/cafuv.fonoaudiologiauv/"><i class='bx bxl-instagram'></i></a>
+                <a href="https://www.youtube.com/uvalpochile"><i class='bx bxl-youtube'></i></a>
+            </div>
+            <form method="post" id="form_usuario">
+                {% csrf_token %}
+                <div class="rut-container">
+                    <div class="form-box">
+                        <input type="text" name="rut" oninput="calcular_dv('id_rut')" maxlength="10" required="" id="id_rut">
+                        <label class="label-input" for="id_rut">RUT</label>
+                    </div>
+                    <i class="fa fa-minus"></i>
+                    <input class="disabled" type="text" id="dv" name="inputDv" disabled="">
+                </div>
+                <div class="form-box">
+                    <input type="password" name="password" required="" id="id_password">
+                    <label class="label-input" for="id_password">Contraseña</label>
+                </div>
+                <input type="hidden" id="id_username" name="username">
+                <button class="btn" type="button" style="color:#fff !important" onclick="enviar_form()">Iniciar Sesión</button>
+            </form>
+        </div>
+        {% if form.errors %}
+        <script>
+            swal("El usuario y/o la contraseña son incorrectos", "", "error");
+        </script>
+        {% endif %}
+        <script src="{% static 'js/base.js' %}"></script>
+        <script>
+            function enviar_form() {
+                var rut = document.getElementById('id_rut').value;
+                var username = rut.replace(/\./g, '');
+                document.getElementById('id_username').value = username;
+                document.getElementById('form_usuario').submit();
+            }
+        </script>
+    </body>
+
+</html>

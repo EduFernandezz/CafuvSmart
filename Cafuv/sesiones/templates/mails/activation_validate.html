@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Activación de cuenta CAFUV</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+        <style>
+            body {
+                font-family: 'Roboto', sans-serif;
+                font-size: 16px;
+                line-height: 1.6;
+                margin: 0;
+                padding: 0;
+                -webkit-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+                background-color: gainsboro;
+
+                >div {
+                    text-align: start;
+                    width: 100%;
+                    padding: 20px;
+                }
+
+                .header {
+                    display: flex;
+                    color: white;
+                    justify-content: space-around;
+                    background-color: #003c58;
+                    padding: 10px 0 10px 0;
+                    align-items: center;
+                }
+            }
+
+
+            #id_usuarios div label {
+                display: flex;
+                align-items: center;
+                flex-direction: row-reverse;
+                height: 40px;
+                justify-content: space-between;
+                border-bottom: 1px solid grey;
+
+                >input {
+                    margin: 0;
+                    padding: 0;
+                    width: auto;
+                }
+            }
+
+
+            .rut-container {
+                display: grid;
+                grid-template-columns: auto 25px 50px;
+                text-align: center;
+
+                >i {
+                    margin-top: 15px
+                }
+            }
+
+            .rut-edit-container {
+                display: grid;
+                grid-template-columns: auto 25px 50px 30px;
+                text-align: center;
+
+                >i {
+                    margin-top: 15px
+                }
+            }
+
+            .disabled {
+                text-align: center;
+            }
+
+            .form-box {
+                position: relative;
+            }
+
+            .form-edit-box {
+                display: grid;
+                grid-template-columns: auto 30px;
+            }
+
+            input,
+            select {
+                width: 100%;
+                padding: 10px 0;
+                font-size: 16px;
+                color: #1e1e1e;
+                margin-bottom: 30px;
+                border: none;
+                border-bottom: 1px solid #1e1e1e;
+                outline: none;
+                background: transparent;
+            }
+
+            .label-input {
+                position: absolute;
+                top: 0;
+                left: 0;
+                padding: 10px 0;
+                font-size: 16px;
+                color: #1e1e1e;
+                pointer-events: none;
+                transition: .5s;
+            }
+
+
+
+            input:focus~label,
+            input:valid~label,
+            select:focus~label,
+            select:valid~label {
+                top: -25px;
+                left: 0;
+                color: #1e1e1e;
+                font-size: 12px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="header">
+            <h1 style="font-weight:400; font-size:40px; padding:0; margin:0;">CAFUV</h1>
+            <img src="https://cafuv.cl/logo.png" alt="Logo-CAFUV" width="100px" height="100px">
+        </div>
+
+        <div style="background-color: #003c58; color:#ffffff; padding:50px 0px 50px 0px;">
+            <div style="background-color: #ffffff; width: 80%; margin-left:10%; color:black; padding:20px 20px 20px 20px; border-radius: 15px;">
+                <h2 style="text-align: center; font-weight: 400;">Activa tu cuenta</h2>
+                <h3 style="font-weight: 100; margin-bottom:50px">Para activar tu cuenta y configurar una contraseña, por favor ingresa tu rut y haz click en el siguiente botón:</h3>
+                <form method="post" id="form_usuario">
+                    {% csrf_token %}
+                    <div class="rut-container">
+                        <div class="form-box">
+                            <input name="username" id="id_username" oninput="calcular_dv('id_username')">
+                            <label class="label-input" for="id_username">Rut</label>
+                        </div>
+                        <i class="fa fa-minus"></i>
+                        <input class="disabled" type="text" id="dv" name="inputDv" value="" disabled>
+                    </div>
+
+                    <div class="form-box">
+                        <input id="id_password1" name="password1" oninput="validar()" type="password">
+                        <label class="label-input" for="id_password1" type="password">Contraseña</label>
+                    </div>
+
+                    <div class="form-box">
+                        <input id="id_password2" name="password2" oninput="validar()" type="password">
+                        <label class="label-input" for="id_password2" type="password">Confirmar Contraseña</label>
+                    </div>
+
+                    <label style="color:red" id="msge1"><i class="bi bi-check-circle"></i> La contraseña debe tener al menos 8 caracteres</label><br>
+                    <label style="color:red" id="msge2"><i class="bi bi-check-circle"></i> La contraseña debe contener al menos un número</label><br>
+                    <label style="color:red" id="msge3"><i class="bi bi-check-circle"></i> La contraseña debe contener al menos una letra mayúscula y una minúsucla</label><br>
+                    <label style="color:red" id="msge4"><i class="bi bi-check-circle"></i> La contraseña debe contener al menos un caracter especial</label><br>
+                    <label style="color:red" id="msge5"><i class="bi bi-check-circle"></i> La contraseña no debe contener espacios</label><br>
+                </form>
+
+                <div id="msge"></div>
+                <div style="width: 100%; display: flex; justify-content: center;">
+                    <button onclick="enviar_formulario()" id="button" style="margin-top:50px; border:none; margin-bottom:50px;display: inline-block; background-color: gray; border-radius: 3px; color: #ffffff; font-family: Helvetica, Arial, sans-serif; font-size: 16px; line-height: 44px; text-align: center; text-decoration: none; width: 200px; -webkit-text-size-adjust: none;">Activar cuenta</button>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div>
+
+            <p>
+                Si no eres parte de CAFUV, por favor ignora esta ventana.
+            </p>
+        </div>
+        <script>
+            function calcular_dv(id) {
+                // Obtén el valor actual del campo de entrada
+                const inputElement = document.getElementById(id)
+                const inputValue = inputElement.value;
+
+                // Aplica una expresión regular para mantener solo los dígitos permitidos
+                const sanitizedValue = inputValue.replace(/[^0-9]/g, '');
+
+                // Limita la longitud del valor a 9 caracteres
+                const limitedValue = sanitizedValue.slice(0, 8);
+
+                // Formatea el valor con puntos cada tres dígitos
+                const formattedValue = limitedValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+                // Actualiza el valor del campo de entrada con el formato deseado
+                inputElement.value = formattedValue;
+
+                // Extraer el valor sin puntos
+                const extractedValue = inputElement.value.replace(/\./g, '');
+
+                //Actualizar el valor del campo DV
+                document.getElementById("dv").value = dgv(extractedValue)
+            };
+
+            function dgv(T) {
+                var M = 0, S = 1;
+                for (; T; T = Math.floor(T / 10))
+                    S = (S + T % 10 * (9 - M++ % 6)) % 11;
+                return S ? S - 1 : 'K';
+            }
+
+            function password_validate() {
+                var password1 = document.getElementById("id_password1").value;
+                var password2 = document.getElementById("id_password2").value;
+                if (password1 != password2) {                    
+                    return false;
+                }
+                return true;
+            }
+
+            function validar() {
+                var counter = 0;
+                if (password_validate()) {
+                    document.getElementById("id_password1").style.borderBottom = "1px solid #1e1e1e";
+                    document.getElementById("id_password2").style.borderBottom = "1px solid #1e1e1e";
+                    counter++;
+                } else {
+                    document.getElementById("id_password1").style.borderBottom = "1px solid red";
+                    document.getElementById("id_password2").style.borderBottom = "1px solid red";
+                }
+
+                if (document.getElementById("id_password1").value.length < 8) {
+                    document.getElementById("msge1").style.color = "red";
+                } else {
+                    document.getElementById("msge1").style.color = "green";
+                    counter++;
+                }
+
+                if (document.getElementById("id_password1").value.match(/[0-9]/)) {
+                    document.getElementById("msge2").style.color = "green";
+                    counter++;
+                } else {
+                    document.getElementById("msge2").style.color = "red";
+                }
+
+                if (document.getElementById("id_password1").value.match(/[A-Z]/) && document.getElementById("id_password1").value.match(/[a-z]/)) {
+                    document.getElementById("msge3").style.color = "green";
+                    counter++;
+                } else {
+                    document.getElementById("msge3").style.color = "red";
+                }
+
+                if (document.getElementById("id_password1").value.match(/[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/)) {
+                    document.getElementById("msge4").style.color = "green";
+                    counter++;
+                } else {
+                    document.getElementById("msge4").style.color = "red";
+                }
+
+                if (document.getElementById("id_password1").value.match(/\s/)) {
+                    document.getElementById("msge5").style.color = "red";
+                } else {
+                    document.getElementById("msge5").style.color = "green";
+                    counter++;
+                }
+                if (counter === 6) {
+                    document.getElementById("button").style.backgroundColor = "#003c58";
+                } else {
+                    document.getElementById("button").style.backgroundColor = "gray";
+                }
+
+            }
+
+            function enviar_formulario() {
+                var msge1 = document.getElementById("msge1");
+                var msge2 = document.getElementById("msge2");
+                var msge3 = document.getElementById("msge3");
+                var msge4 = document.getElementById("msge4");
+                var msge5 = document.getElementById("msge5");
+                if (password_validate() && msge1.style.color == "green" && msge2.style.color == "green" && msge3.style.color == "green" && msge4.style.color == "green" && msge5.style.color == "green" ) {
+                    document.getElementById("form_usuario").submit();
+                }
+            }
+        </script>
+    </body>
+
+</html>

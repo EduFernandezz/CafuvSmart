@@ -1,0 +1,61 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+
+{% block form-evento %}
+<style>
+    main {
+        z-index: -1;
+    }
+</style>
+<div class="form-back">
+    <div class="form-container" id="formulario-evento">
+        <div class="form-header">
+            <h2>Nuevo Evento</h2>
+            <a href="{% url 'home' %}"><i class="fa-solid fa-x"></i></a>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-box">
+                {{ form.titulo }}
+                <label class="label-input" for="id_titulo">{{ form.titulo.label }}</label>
+            </div>
+            <div class="form-box">
+                {{ form.prioridad }}
+                <label class="label-input" for="id_prioridad">{{ form.prioridad.label }}</label>
+            </div>
+            <div class="form-box">
+                {{ form.fecha_inicio }}
+                <label class="label-input" for="id_fecha_inicio">{{ form.fecha_inicio.label }}</label>
+            </div>
+            <div class="form-box">
+                {{ form.fecha_termino }}
+                <label class="label-input" for="id_fecha_termino">{{ form.fecha_termino.label }}</label>
+            </div>
+            <div id="fecha_alert"></div>
+
+            <label>Usuarios</label>
+            <div class="check-group">
+                <div id="id_usuarios">
+                    {% for usuario in usuarios %}
+                    <div>
+                        <label for="id_{{usuario.id}}">
+                            <input type="checkbox" name="usuarios" value="{{usuario.id}}" id="id_{{usuario.id}}">
+                            <img src="{{usuario.image.url}}" style="width:20px; border-radius:50%;">
+                            {{usuario.first_name}} {{usuario.last_name}}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-box">
+                {{ form.descripcion }}
+                <label class="label-input" for="id_descripcion">{{ form.descripcion.label }}</label>
+            </div>
+            <button class="btn" id="btn-guardar-evento" type="submit">Guardar</button>
+        </form>
+    </div>
+</div>
+
+<script src="{% static 'js/base.js' %}"></script>
+
+{% endblock form-evento %}

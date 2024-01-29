@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<h1><i class="fa-solid fa-folder-open"></i> Archivos</h1>
+{% endblock title %}
+
+{% block active-archivo %}active{% endblock active-archivo %}
+
+{% block content %}
+<i class="fa-solid fa-circle-info" style="font-size:25px; position: absolute; top:20px; right:20px; color:var(--primary)" onclick="tutorial_archivo()"></i>
+
+<form action="{% url 'file-upload' %}" class="dropzone" id="dropzone" enctype="multipart/form_data">
+    {%csrf_token%}
+</form>
+
+<div id="archivos"></div>
+
+<script>
+    Dropzone.options.dropzone = {
+        paramName: "file", // Los elementos de entrada del formulario se llamarán así
+        maxFilesize: 2, // MB
+        // otros parámetros de configuración...
+        dictDefaultMessage: `<i class="fa-solid fa-cloud-arrow-up" style="font-size:50px;color:lightslategray"></i><br><label>Arrastrar y soltar archivos aquí</label><br><button type="button" class="btn" style="margin-top:10px;">Seleccionar desde dispositivo <i class="fa-solid fa-magnifying-glass"></i></button>`,
+        dictFileTooBig: "El archivo es demasiado grande ({{filesize}}MiB). Tamaño máximo de archivo: {{maxFilesize}}MiB.",
+        dictInvalidFileType: "No puedes subir archivos de este tipo.",
+        dictResponseError: "Server responded with {{statusCode}} code.",
+        dictCancelUpload: "Cancelar subida",
+        dictUploadCanceled: "Subida cancelada.",
+        dictCancelUploadConfirmation: "¿Estás seguro de que quieres cancelar esta subida?",
+        dictRemoveFile: "Eliminar archivo",
+        dictRemoveFileConfirmation: null,
+        dictMaxFilesExceeded: "No puedes subir más archivos.",
+        init: function () {
+            this.on("success", function (file, response) {
+                // Recarga la página después de una carga exitosa
+                window.location.reload();
+            });
+        }
+    };
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/archivos/api/')
+            .then(response => response.json())
+            .then(data => {
+                new gridjs.Grid({
+                    search: true,
+                    sort: true,
+                    resizable: true,
+                    columns: [
+                        {
+                            name: 'Nombre',
+                            formatter: (cell) => gridjs.html(`${cell}`)
+                        },
+                        'Fecha',
+                        'Propietario',
+                        'N° Compartido',
+                        {
+                            name: 'Acciones',
+                            formatter: (cell) => gridjs.html(`<div class="container-table-button">${cell}</div>`)
+                        }
+                    ],
+                    data: data,
+                    language: {
+                        'search': {
+                            'placeholder': 'Buscar...'
+                        },
+                    }
+                }).render(document.getElementById("archivos"));
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+
+
+
+</script>
+{% endblock content %}
+
+{% block form %}
+{% block form-archivo %}
+{% endblock %}
+{% endblock form %}

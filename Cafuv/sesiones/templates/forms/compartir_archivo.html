@@ -1,0 +1,32 @@
+{% extends 'pages/archivos.html' %}
+{% load static %}
+{% block form-archivo %}
+<div class="form-back">
+    <div class="form-container">
+        <div class="form-header">
+            <h2>Compartir Archivo</h2>
+            <a href="{% url 'archivos_view' %}"><i class="fa-solid fa-x"></i></a>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div>
+                <h4>Usuarios</h4>
+                <div class="check-group">
+                    <div id="id_usuarios">
+                        {% for usuario in usuarios %}
+                        <div>
+                            <label for="id_{{usuario.id}}">
+                                <input type="checkbox" name="usuarios" value="{{usuario.id}}" id="id_{{usuario.id}}">
+                                <img src="{{usuario.image.url}}" style="width:20px; border-radius:50%;">
+                                {{usuario.first_name}} {{usuario.last_name}} 
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <button class="btn" type="submit">Guardar</button>
+        </form>
+    </div>
+</div>
+{% endblock form-archivo %}
